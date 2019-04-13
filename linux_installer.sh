@@ -41,7 +41,7 @@ if [[ x$answer != xyes ]]
    exit
 fi
 
-echo "TODO: ask user about interest of installing support for every language"
+#echo "TODO: ask user about interest of installing support for every language"
 
 echo "==================================="
 echo "Installing Neo .NET compiler (neon)"
@@ -69,16 +69,28 @@ echo "Getting latest csharp devpack from github"
 echo "-----------------------------------------"
 (cd /opt/nuc/neon && git clone https://github.com/neo-project/neo-devpack-dotnet.git)
 
+#TODO: libraries should be put on user directory
+
 echo "------------------------------"
 echo "Building latest csharp devpack"
 echo "------------------------------"
 (cd /opt/nuc/neon/neo-devpack-dotnet && git checkout master && git checkout -- . && git pull)
 echo "Will replace Framework support for netcoreapp2.0"
 sed -i -e 's/netstandard1.6;net40/netstandard2.0;netcoreapp2.0/g' /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework/Neo.SmartContract.Framework.csproj
+#(cd /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework && dotnet restore && \
+#        dotnet build -c Release && dotnet publish -f netcoreapp2.0 -c Release && \
+#        mkdir -p /opt/nuc/neon/lib-csharp-devpack-master && \
+#        mv /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework/bin/Release/netcoreapp2.0/publish/* /opt/nuc/neon/lib-csharp-devpack-master)
 (cd /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework && dotnet restore && \
         dotnet build -c Release && dotnet publish -f netcoreapp2.0 -c Release && \
+        dotnet build -c Release && dotnet publish -f netstandard2.0 -c Release && \
         mkdir -p /opt/nuc/neon/lib-csharp-devpack-master && \
-        mv /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework/bin/Release/netcoreapp2.0/publish/* /opt/nuc/neon/lib-csharp-devpack-master)
+        cp -r /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework/* /opt/nuc/neon/lib-csharp-devpack-master)
+
+#TODO: libraries should be put on user directory
+# read permissions on smart contract C# framework
+chmod 777 -R /opt/nuc/neon/lib-csharp-devpack-master
+
 
 echo "=============================="
 echo "Installing NUC to /opt/nuc/bin"
