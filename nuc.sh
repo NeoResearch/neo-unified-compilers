@@ -53,6 +53,46 @@ namespace Neo.SmartContract
         (cd $filename && dotnet build -c Release)
         #dotnet add reference /opt/nuc/neon/lib-csharp-devpack-master/Neo.SmartContract.Framework.csproj
         #sed -i -e 's,</Project>,<ItemGroup><ProjectReference Include="/opt/nuc/neon/lib-csharp-devpack/Neo.SmartContract.Framework\Neo.SmartContract.Framework.csproj" /> </ItemGroup></Project>=gnetstandard1.6;net40/netstandard2.0;netcoreapp2.0/g' /opt/nuc/neon/neo-devpack-dotnet/Neo.SmartContract.Framework/Neo.SmartContract.Framework.csproj
+        echo "Do you want to generate VS Code task?"
+        echo "generating $filename/.vscode/tasks.json"
+        mkdir -p $filename/.vscode
+        echo "
+{
+    \"version\": \"2.0.0\",
+    \"tasks\": [
+        {
+            \"label\": \"compile $filename\",
+            \"command\": \"dotnet\",
+            \"type\": \"process\",
+            \"args\": [
+                \"build\",
+                \"\${workspaceFolder}/$filename.csproj\",
+                \"-c\",
+                \"Release\"
+            ],
+            \"problemMatcher\": \"\$msCompile\"
+        },
+        {
+            \"label\": \"build $filename\",
+            \"command\": \"nuc\",
+            \"type\": \"process\",
+            \"args\": [
+                \"\${workspaceFolder}/bin/Release/netcoreapp2.0/$filename.dll\",
+            ],
+            \"windows\": {
+                \"command\": \"???\"
+            },
+            \"problemMatcher\": \"\$msCompile\",
+            \"group\": {
+                \"kind\": \"build\",
+                \"isDefault\": true
+            },
+            \"dependsOn\": [\"compile $filename\"]
+        }
+    ]
+}
+" > $filename/.vscode/tasks.json
+
         exit 0
       fi
       echo "Unknown file extension $extension"
@@ -89,6 +129,16 @@ if [ $# -eq 1 ]; then
     fi
 
     # try to get file extension
-    echo "not ready for files yet..."
+    filename=$(basename -- "$1")
+    extension="${filename##*.}"
+    dirbase=$(dirname "$1")
+    if [ "$extension" == "dll" ]; then
+      echo "converting .NET application (neon)"
+      echo "command: (cd $dirname && dotnet $NUC_PATH/neon/bin-neon-master/neon.dll $filename)"
+      (cd $dirbase && dotnet $NUC_PATH/neon/bin-neon-master/neon.dll $filename)
+      exit 0
+    fi
+
+    echo "not ready for these files yet..."
     exit 1
 fi

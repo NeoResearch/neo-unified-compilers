@@ -8,6 +8,8 @@ To create dapp on C#: `nuc dapp MyTestDapp.cs`
 Go to folder `MyTestDapp` and open it on your favorite editor ;)
 
 
+_Thanks to @hugbro for the many advices that helped us made this possible._
+
 Copyleft 2019
 
 NeoResearch Community
