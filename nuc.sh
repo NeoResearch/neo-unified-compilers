@@ -7,6 +7,7 @@ if [ $# -eq 0 ]; then
     echo $0: usage: nuc [options] or nuc [path-to-file]
     echo "options:"
     echo "nuc dapp [ Example.cs | Example.py | ... ] -> creates a new dapp project on the given language"
+    echo "nuc hex [ Contract.nvm | Contract.avm ] -> view nvm opcodes in hex format"
     echo "nuc version  -> displays versions of available compilers"
     echo "nuc help     -> displays help"
     echo "path-to-file:"
@@ -93,10 +94,27 @@ namespace Neo.SmartContract
 }
 " > $filename/.vscode/tasks.json
 
+        echo "$filename generated successfully!"
         exit 0
       fi
       echo "Unknown file extension $extension"
       exit 1
+    elif [ "$1" == "hex" ]; then
+      xxd --version &> /dev/null
+      XXD_IS_AVAILABLE=$?
+      if [ $XXD_IS_AVAILABLE -ne 0 ]
+        then echo "Must have xxd installed to run: nuc hex. Aborting"
+        exit 1
+      fi
+      filename=$(basename -- "$2")
+      extension="${filename##*.}"
+      if [ "$extension" == "avm" ]; then
+        cat $2 | xxd -p
+      else
+        echo "unknown file extension: $extension (expected .avm or .nvm)"
+        exit 1
+      fi
+      exit 0
     else
       echo "unknown option: $1"
       exit 1
