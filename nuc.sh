@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NUC_PATH=/opt/nuc
+
 if [ $# -eq 0 ]; then
     echo "Welcome to NUC (Unified Compilers for Neo Blockchain)"
     echo $0: usage: nuc [options] or nuc [path-to-file]
@@ -28,7 +30,7 @@ if [ $# -eq 2 ]; then
            #sed -i -e "s,$filename.csproj,\\/opt\\/nuc\\/neon\\/lib-csharp-devpack-master\\/bin\\/Release\\/netcoreapp2.0\\/Neo.SmartContract.Framework.dll,g" ${filename}.csproj && \
            #sed -i -e "s,<ProjectReference,<Reference,g" ${filename}.csproj )
            sed -i -e "s,netstandard2.0,netcoreapp2.0,g" ${filename}.csproj && \
-           sed -i -e "s,$filename.csproj,\\/opt\\/nuc\\/neon\\/lib-csharp-devpack-master\\/Neo.SmartContract.Framework.csproj,g" ${filename}.csproj)
+           sed -i -e "s,$filename.csproj,$NUC_PATH\\/neon\\/lib-csharp-devpack-master\\/Neo.SmartContract.Framework.csproj,g" ${filename}.csproj)
         (cd $filename && dotnet restore)
         echo "Configuring Hello World example on $filename folder..."
         echo "
@@ -67,7 +69,7 @@ if [ $# -eq 1 ]; then
       echo "===================="
       echo ".NET compiler (neon)"
       echo "===================="
-      dotnet /opt/nuc/neon/bin-neon-master/neon.dll --version
+      dotnet $NUC_PATH/neon/bin-neon-master/neon.dll --version
       exit 0
     fi
 
