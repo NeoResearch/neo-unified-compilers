@@ -2,6 +2,11 @@
 ## NUC: Compilers for Neo Blockchain
 
 ### How to install
+
+Install dotnet-sdk (currently dotnet core 2.2 for linux).
+
+Recommended: install VS Code (project is automatically generated on this format)
+
 To install on linux: `./linux_install.sh` (no need for root user! perhaps will need `chmod +x linux_install.sh`)
 
 ### Easily creating a C# Smart Contract
